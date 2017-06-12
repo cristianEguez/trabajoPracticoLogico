@@ -7,7 +7,11 @@ pareja(bernardo, charo).
 trabajaPara(marsellus, vincent).
 trabajaPara(marsellus, jules).
 trabajaPara(marsellus, winston).
-trabajaPara(Empleador,bernardo):- trabajaPara(marsellus,Empleador),Empleador \= jules.
+
+trabajaPara(Empleador,bernardo):- 
+	trabajaPara(marsellus,Empleador),
+	Empleador \= jules.
+	
 trabajaPara(Empleador,george):- saleCon(bernardo,Empleador).
 
 saleCon(Persona,OtraPersona):- pareja(Persona,OtraPersona). % No es recursiva.
@@ -18,7 +22,9 @@ esFiel(Persona):-
 	not((saleCon(Persona,Alguien2),Alguien1\=Alguien2)).
 	
 acataOrden(Empleador,Empleado):- trabajaPara(Empleador,Empleado). % Caso base
-acataOrden(Empleador,Empleado):- trabajaPara(Empleador,Intermedio),acataOrden(Intermedio,Empleado). % Caso recursivo
+acataOrden(Empleador,Empleado):- 
+	trabajaPara(Empleador,Intermedio),
+	acataOrden(Intermedio,Empleado). % Caso recursivo
 
 % SEGUNDA PARTE
 
@@ -73,23 +79,54 @@ nivelDeRespeto(Personaje,20):-
 	personaje(Personaje,mafioso(capo)).
 nivelDeRespeto(vincent,15).
 
+%agregado para respetabilidad2
+nivelDeRespeto(Personaje,0):- 
+	personaje(Personaje,_).
+
 esRespetable(Personaje):-
 	nivelDeRespeto(Personaje,Nivel),
 	Nivel > 9.
 
+%% agreado para respetabilidad2
+noRespetable(Personaje):-	
+	nivelDeRespeto(Personaje,Nivel),
+	not(esRespetable(Personaje)),
+	Nivel < 9.
+	
+%% agreado para respetabilidad2	
+sinRepeticion([X],[X]).
+sinRepeticion([X|XS],[X|ListaSinRepetidos]):- 
+	not(member(X,XS)),
+	sinRepeticion(XS,ListaSinRepetidos).
+sinRepeticion([X|XS],ListaSinRepetidos):- 
+	member(X,XS),
+	sinRepeticion(XS,ListaSinRepetidos).
+
 respetabilidad(Respetables,NoRespetables):-
 	findall(Personaje,esRespetable(Personaje),PersonajesRespetables),
 	length(PersonajesRespetables,Respetables),
-	findall(Personaje2,personaje(Personaje2,_),PersonajesNoRespetables),
-	length(PersonajesNoRespetables,CantNoRespetables),
-	NoRespetables is CantNoRespetables-Respetables.
-
+	findall(Personaje2,personaje(Personaje2,_),PersonajesTotales),
+	length(PersonajesTotales,CantPersonajesTotales),
+	NoRespetables is CantPersonajesTotales-Respetables.
+	
+respetabilidad2(Respetables,NoRespetables):-
+	findall(Personaje,esRespetable(Personaje),PersonajesRespetables),
+	length(PersonajesRespetables,Respetables),
+	findall(Personaje2,noRespetable(Personaje2),PersonajesNoRespetables),
+	sinRepeticion(PersonajesNoRespetables,PersonajesNoRespetablesSinRepeticion),
+	length(PersonajesNoRespetablesSinRepeticion,NoRespetables).
+	
 cantidadDeEncargos(Personaje,CantidadDeEncargos):-
 	personaje(Personaje,_),
-	findall(_,encargo(_,Personaje,_),Encargos),
+	findall(Encargo ,encargo(_,Personaje, Encargo),Encargos),
 	length(Encargos,CantidadDeEncargos).
 	
 masAtareado(Personaje):-
 	cantidadDeEncargos(Personaje,CantidadDeEncargos),
 	forall(cantidadDeEncargos(_,CantidadDeEncargos2),
 	CantidadDeEncargos>=CantidadDeEncargos2).
+
+% Otra Forma
+masAtareado2(Personaje):-
+	cantidadDeEncargos(Personaje,CantidadDeEncargos),
+	not((cantidadDeEncargos(_,CantidadDeEncargos2), CantidadDeEncargos2 > CantidadDeEncargos)).
