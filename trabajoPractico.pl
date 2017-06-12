@@ -130,3 +130,17 @@ masAtareado(Personaje):-
 masAtareado2(Personaje):-
 	cantidadDeEncargos(Personaje,CantidadDeEncargos),
 	not((cantidadDeEncargos(_,CantidadDeEncargos2), CantidadDeEncargos2 > CantidadDeEncargos)).
+	
+/*  Se nos complico encarar respetabilidad con not(esRespetable(Persona),esRespetable es inversible pero con el not ya no lo es dado 
+que no viene ligado. Entonces definimos noRespetable y debimos agregar cosas para que nos de lo esperado.
+
+	nivelDeRespeto(Personaje,0):- 
+	personaje(Personaje,_). 	
+
+Hace que los personajes tengan nivel 0 y los respetables tambien entran aca.Entonces en noRespetable se agrega not(esRespetable).
+Esto lo agregamos nosotros pero si tenemos en cuenta el item 4 del punto 3 no debería ser asi dado que dice que para el resto de 
+personajes no se cuenta con un nivel de respeto.
+
+sinRepeticion es necesario porque hay personas que no son respetables por distintos motivos, por ej mia solo hizo una pelicula y 
+si nivel de respeto es 0.1 y ademas con el agregado que hicimos su nivel de respeto tambien es 0, entonces aparecería 2 veces en
+la lista ( cosa que no queremos). */
