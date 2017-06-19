@@ -18,8 +18,8 @@ saleCon(Persona,OtraPersona):- pareja(Persona,OtraPersona). % No es recursiva.
 saleCon(Persona,OtraPersona):- pareja(OtraPersona,Persona).
 
 esFiel(Persona):- 
-	saleCon(Persona,Alguien1),
-	not((saleCon(Persona,Alguien2),Alguien1\=Alguien2)).
+	saleCon(Persona,UnaPersona),
+	not((saleCon(Persona,OtraPersona),UnaPersona\=OtraPersona)).
 	
 acataOrden(Empleador,Empleado):- trabajaPara(Empleador,Empleado). % Caso base
 acataOrden(Empleador,Empleado):- 
